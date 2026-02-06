@@ -6,8 +6,11 @@
   "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
   "devCommand": "npm run web",
-  "installCommand": "npm ci",
+  "installCommand": "npm ci --only=production",
   "nodeVersion": "20.x",
+  "functions": {},
+  "builds": [],
+  "routes": [],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],

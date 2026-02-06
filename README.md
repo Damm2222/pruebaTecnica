@@ -2,6 +2,8 @@
 
 Aplicación web hecha con **React Native** y **React Native Web** para gestionar Posts, usando **Redux Toolkit** como gestor de estado.
 
+*Versión optimizada para deploment web sin dependencias Ruby.*
+
 ## Funcionalidades
 
 1. **Insertar posts** — formulario con validación (nombre >= 3 caracteres, descripción >= 10 caracteres).

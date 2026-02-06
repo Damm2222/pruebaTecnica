@@ -1,12 +1,13 @@
 # Archivos de React Native móvil que no son necesarios para web
 ios/
 android/
-Gemfile
-Gemfile.lock
-Podfile
-Podfile.lock
-vendor/
-.bundle/
+**/Gemfile*
+**/Podfile*
+**/vendor/
+**/.bundle/
+**/.rbenv
+**/.ruby-version
+**/ruby*
 
 # Archivos de Metro (React Native bundler)
 metro.config.js
