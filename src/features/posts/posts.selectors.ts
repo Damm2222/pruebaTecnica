@@ -1,10 +1,9 @@
 import {createSelector} from '@reduxjs/toolkit';
 import {RootState} from '../../store/store';
-import {Post} from '../../models/post.model';
 
 /**
- * Selectors - Equivalente a NgRx Selectors
- * Optimizados con memoización
+ * Selectors - Equivalentes a NgRx Selectors
+ * Optimizados con memoización via Reselect
  */
 
 // Selector base del estado de posts
@@ -14,12 +13,6 @@ const selectPostsState = (state: RootState) => state.posts;
 export const selectAllPosts = createSelector(
   [selectPostsState],
   postsState => postsState.posts,
-);
-
-// Selector para obtener el post seleccionado
-export const selectSelectedPost = createSelector(
-  [selectPostsState],
-  postsState => postsState.selectedPost,
 );
 
 // Selector para obtener el estado de carga
@@ -34,17 +27,11 @@ export const selectPostsError = createSelector(
   postsState => postsState.error,
 );
 
-// Selector para obtener la cantidad de posts
+// Selector para obtener la cantidad total de posts
 export const selectPostsCount = createSelector(
   [selectAllPosts],
   posts => posts.length,
 );
-
-// Selector para obtener un post por ID
-export const selectPostById = (postId: string) =>
-  createSelector([selectAllPosts], (posts: Post[]) =>
-    posts.find((post: Post) => post.id === postId),
-  );
 
 // Selector para obtener posts ordenados por fecha (más recientes primero)
 export const selectPostsSortedByDate = createSelector(

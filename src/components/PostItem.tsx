@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Platform, Alert} from 'react-native';
 import {Post} from '../models/post.model';
 
 interface PostItemProps {
@@ -12,18 +12,28 @@ interface PostItemProps {
  */
 export const PostItem: React.FC<PostItemProps> = ({post, onDelete}) => {
   const handleDelete = () => {
-    Alert.alert(
-      'Eliminar Post',
-      `¿Estás seguro de eliminar "${post.name}"?`,
-      [
-        {text: 'Cancelar', style: 'cancel'},
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: () => onDelete(post.id),
-        },
-      ],
-    );
+    if (Platform.OS === 'web') {
+      // window.confirm funciona en navegadores; Alert.alert no está soportado en web
+      const confirmed = window.confirm(
+        `¿Estás seguro de eliminar "${post.name}"?`,
+      );
+      if (confirmed) {
+        onDelete(post.id);
+      }
+    } else {
+      Alert.alert(
+        'Eliminar Post',
+        `¿Estás seguro de eliminar "${post.name}"?`,
+        [
+          {text: 'Cancelar', style: 'cancel'},
+          {
+            text: 'Eliminar',
+            style: 'destructive',
+            onPress: () => onDelete(post.id),
+          },
+        ],
+      );
+    }
   };
 
   const formatDate = (dateString: string) => {

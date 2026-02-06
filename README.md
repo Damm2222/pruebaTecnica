@@ -1,178 +1,102 @@
-# Posts App - React Native con NgRx
+# Posts App — React Native Web
 
-Aplicación React Native para gestionar Posts usando Redux Toolkit con arquitectura tipo NgRx.
+Aplicación web hecha con **React Native** y **React Native Web** para gestionar Posts, usando **Redux Toolkit** como gestor de estado.
 
-## 🚀 Características
+## Funcionalidades
 
-- ✅ React Native 0.83.1 con TypeScript
-- ✅ Redux Toolkit (arquitectura tipo NgRx)
-- ✅ CRUD completo de Posts (Crear, Leer, Actualizar, Eliminar)
-- ✅ Arquitectura limpia y escalable
-- ✅ Buenas prácticas con camelCase
+1. **Insertar posts** — formulario con validación (nombre >= 3 caracteres, descripción >= 10 caracteres).
+2. **Eliminar posts** — botón de eliminación con confirmación.
+3. **Listar posts** — listado ordenado por fecha de creación (más recientes primero).
+4. **Filtrar posts por nombre** — búsqueda en tiempo real con contador de resultados.
 
-## 📁 Estructura del Proyecto
+## Estructura de la Interfaz
+
+| Sección        | Componente   | Descripción                          |
+| -------------- | ------------ | ------------------------------------ |
+| Formulario     | `PostForm`   | Crea nuevos posts                    |
+| Filtro         | `PostFilter` | Busca posts por nombre               |
+| Lista          | `PostList`   | Muestra y permite eliminar posts     |
+
+## Buenas Prácticas
+
+| Lenguaje / Formato          | Convención   |
+| --------------------------- | ------------ |
+| JSON                        | `camelCase`  |
+| JavaScript / TypeScript     | `camelCase`  |
+| Ruby                        | `snake_case` |
+
+## Arquitectura del Proyecto
 
 ```
-PruebaTecnica/
-├── src/
-│   ├── models/              # Modelos de datos (interfaces TypeScript)
-│   │   └── post.model.ts
-│   ├── store/               # Configuración del Store Redux
-│   │   ├── store.ts         # Store principal
-│   │   └── hooks.ts         # Hooks tipados
-│   ├── features/            # Features organizados por dominio
-│   │   └── posts/
-│   │       ├── posts.slice.ts      # Actions + Reducer (NgRx-style)
-│   │       └── posts.selectors.ts  # Selectors memoizados
-│   └── components/          # Componentes de UI
-│       ├── PostList.tsx     # Lista de posts
-│       ├── PostItem.tsx     # Item individual
-│       └── PostForm.tsx     # Formulario crear/editar
-├── App.tsx                  # Componente raíz con Provider
-└── package.json
+src/
+├── models/
+│   └── post.model.ts            # Interfaces: Post, CreatePostDto
+├── services/
+│   └── postService.ts           # Servicio que emula una API REST (sin backend)
+├── store/
+│   ├── store.ts                 # Store principal de Redux
+│   └── hooks.ts                 # Hooks tipados (useAppDispatch, useAppSelector)
+├── features/
+│   └── posts/
+│       ├── posts.slice.ts       # Slice con async thunks (loadPosts, addPost, deletePost)
+│       └── posts.selectors.ts   # Selectors memoizados con Reselect
+└── components/
+    ├── index.ts                 # Barrel de exports
+    ├── PostForm.tsx             # Formulario de creación
+    ├── PostFilter.tsx           # Filtro por nombre
+    ├── PostList.tsx             # Lista de posts
+    └── PostItem.tsx             # Item individual con botón de eliminar
 ```
 
-## 🏗️ Arquitectura NgRx
+### Servicio Emulado (sin Backend)
 
-### State Management (Redux Toolkit)
+El archivo `src/services/postService.ts` simula llamadas a una API REST con latencia de red:
 
-**Store** (`src/store/store.ts`)
-- Configuración centralizada del estado global
-- Types para RootState y AppDispatch
+- `fetchPosts()` — emula `GET /api/posts` y retorna posts semilla.
+- `createPost(dto)` — emula `POST /api/posts` generando id y fecha.
+- `deletePostById(id)` — emula `DELETE /api/posts/:id`.
 
-**Slice** (`src/features/posts/posts.slice.ts`)
-- Combina Actions + Reducer al estilo NgRx
-- Actions: `addPost`, `updatePost`, `deletePost`, `selectPost`
-- Estado inmutable con Immer
+Los datos iniciales se cargan automáticamente al iniciar la app mediante un `createAsyncThunk`.
 
-**Selectors** (`src/features/posts/posts.selectors.ts`)
-- Selectors memoizados con Reselect
-- `selectAllPosts`, `selectPostsSortedByDate`, `selectPostsCount`
-- Optimización de renderizado
+---
 
-### Modelo de Datos
+## Levantar el Ambiente de Desarrollo
 
-```typescript
-interface Post {
-  id: string;
-  name: string;           // camelCase ✅
-  description: string;    // camelCase ✅
-  createdAt: string;
-}
+### Requisitos Previos
+
+- **Node.js** >= 20
+- **npm** (incluido con Node.js)
+
+### Paso 1: Clonar el repositorio
+
+```sh
+git clone <url-del-repositorio>
+cd PruebaTecnica
 ```
 
-## 📱 Funcionalidades
-
-1. **Listar Posts**: Vista de todos los posts ordenados por fecha
-2. **Crear Post**: Formulario modal con validaciones
-3. **Editar Post**: Modificar posts existentes
-4. **Eliminar Post**: Eliminar posts con confirmación visual
-5. **Validaciones**: Nombre mínimo 3 caracteres, descripción mínimo 10
-
-## 🎨 UI/UX
-
-- Diseño moderno con Material Design
-- FAB (Floating Action Button) para crear posts
-- Modal para formularios
-- Estados vacíos informativos
-- Contador de posts en el header
-- Animaciones suaves
-
-# Getting Started
-
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
-
-## Step 1: Install Dependencies
+### Paso 2: Instalar dependencias
 
 ```sh
 npm install
 ```
 
-## Step 2: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
+### Paso 3: Iniciar la aplicación web
 
 ```sh
-npm start
+npm run web
 ```
 
-## Step 3: Build and run your app
+La aplicación se abrirá en [http://localhost:3000](http://localhost:3000).
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+---
 
-### Android
+## Tecnologías Utilizadas
 
-```sh
-npm run android
-```
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
-# pruebaTecnica
+| Herramienta         | Versión  | Propósito                    |
+| ------------------- | -------- | ---------------------------- |
+| React               | 19.2.0   | Biblioteca de UI             |
+| React Native        | 0.83.1   | Framework móvil              |
+| React Native Web    | latest   | Soporte web para RN          |
+| Redux Toolkit       | ^2.11.2  | Gestión de estado            |
+| TypeScript          | ^5.8.3   | Tipado estático              |
+| Vite                | ^7.3.1   | Bundler y dev server         |

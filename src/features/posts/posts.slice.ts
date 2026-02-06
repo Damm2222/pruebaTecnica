@@ -1,5 +1,6 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Post, CreatePostDto, UpdatePostDto} from '../../models/post.model';
+import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import {Post, CreatePostDto} from '../../models/post.model';
+import * as postService from '../../services/postService';
 
 /**
  * Posts State - Estructura del estado al estilo NgRx
@@ -8,7 +9,6 @@ interface PostsState {
   posts: Post[];
   loading: boolean;
   error: string | null;
-  selectedPost: Post | null;
   searchFilter: string;
 }
 
@@ -19,60 +19,38 @@ const initialState: PostsState = {
   posts: [],
   loading: false,
   error: null,
-  selectedPost: null,
   searchFilter: '',
 };
 
-/**
- * Posts Slice - Equivalente a NgRx Store + Actions + Reducer
- * Maneja todas las operaciones CRUD de Posts
- */
+// ── Async Thunks (emulan llamadas a una API REST) ──────────────
+
+/** GET /api/posts - Cargar posts iniciales desde el servicio */
+export const loadPosts = createAsyncThunk('posts/loadPosts', async () => {
+  return await postService.fetchPosts();
+});
+
+/** POST /api/posts - Crear un nuevo post a través del servicio */
+export const addPost = createAsyncThunk(
+  'posts/addPost',
+  async (dto: CreatePostDto) => {
+    return await postService.createPost(dto);
+  },
+);
+
+/** DELETE /api/posts/:id - Eliminar un post a través del servicio */
+export const deletePost = createAsyncThunk(
+  'posts/deletePost',
+  async (id: string) => {
+    return await postService.deletePostById(id);
+  },
+);
+
+// ── Slice ──────────────────────────────────────────────────────
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {
-    // CREATE - Agregar nuevo post
-    addPost: (state, action: PayloadAction<CreatePostDto>) => {
-      const newPost: Post = {
-        id: Date.now().toString(),
-        name: action.payload.name,
-        description: action.payload.description,
-        createdAt: new Date().toISOString(),
-      };
-      state.posts.push(newPost);
-    },
-
-    // READ - Seleccionar post
-    selectPost: (state, action: PayloadAction<string>) => {
-      const post = state.posts.find(p => p.id === action.payload);
-      state.selectedPost = post || null;
-    },
-
-    // UPDATE - Actualizar post existente
-    updatePost: (state, action: PayloadAction<UpdatePostDto>) => {
-      const index = state.posts.findIndex(p => p.id === action.payload.id);
-      if (index !== -1) {
-        state.posts[index] = {
-          ...state.posts[index],
-          name: action.payload.name,
-          description: action.payload.description,
-        };
-      }
-    },
-
-    // DELETE - Eliminar post
-    deletePost: (state, action: PayloadAction<string>) => {
-      state.posts = state.posts.filter(p => p.id !== action.payload);
-      if (state.selectedPost?.id === action.payload) {
-        state.selectedPost = null;
-      }
-    },
-
-    // Limpiar selección
-    clearSelection: state => {
-      state.selectedPost = null;
-    },
-
     // FILTER - Establecer filtro de búsqueda
     setSearchFilter: (state, action: PayloadAction<string>) => {
       state.searchFilter = action.payload;
@@ -83,31 +61,62 @@ const postsSlice = createSlice({
       state.searchFilter = '';
     },
 
-    // Manejo de errores
-    setError: (state, action: PayloadAction<string>) => {
-      state.error = action.payload;
-      state.loading = false;
-    },
-
     // Limpiar error
     clearError: state => {
       state.error = null;
     },
   },
+  extraReducers: builder => {
+    // ── loadPosts ──
+    builder
+      .addCase(loadPosts.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loadPosts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = action.payload;
+      })
+      .addCase(loadPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message ?? 'Error al cargar los posts';
+      });
+
+    // ── addPost ──
+    builder
+      .addCase(addPost.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addPost.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts.push(action.payload);
+      })
+      .addCase(addPost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message ?? 'Error al crear el post';
+      });
+
+    // ── deletePost ──
+    builder
+      .addCase(deletePost.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = state.posts.filter(p => p.id !== action.payload);
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message ?? 'Error al eliminar el post';
+      });
+  },
 });
 
-// Exportar actions (equivalente a NgRx Actions)
-export const {
-  addPost,
-  selectPost,
-  updatePost,
-  deletePost,
-  clearSelection,
-  setSearchFilter,
-  clearSearchFilter,
-  setError,
-  clearError,
-} = postsSlice.actions;
+// Exportar actions
+export const {setSearchFilter, clearSearchFilter, clearError} =
+  postsSlice.actions;
 
-// Exportar reducer (equivalente a NgRx Reducer)
+// Exportar reducer
 export default postsSlice.reducer;

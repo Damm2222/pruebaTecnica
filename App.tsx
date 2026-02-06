@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   StatusBar,
   StyleSheet,
@@ -18,6 +18,8 @@ import {
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {Provider} from 'react-redux';
 import {store} from './src/store/store';
+import {useAppDispatch} from './src/store/hooks';
+import {loadPosts} from './src/features/posts/posts.slice';
 import {PostForm, PostFilter, PostList} from './src/components';
 
 /**
@@ -39,6 +41,13 @@ function App() {
  * Estructura: Formulario → Filtro → Lista
  */
 function AppContent() {
+  const dispatch = useAppDispatch();
+
+  // Cargar posts iniciales desde el servicio emulado
+  useEffect(() => {
+    dispatch(loadPosts());
+  }, [dispatch]);
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <KeyboardAvoidingView
@@ -46,10 +55,8 @@ function AppContent() {
         style={styles.keyboardView}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>📝 Posts App</Text>
-          <Text style={styles.headerSubtitle}>
-            React Native + Redux Toolkit
-          </Text>
+          <Text style={styles.headerTitle}>Crud TCIT</Text>
+     
         </View>
 
         {/* Main Content */}
