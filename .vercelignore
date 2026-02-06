@@ -1,0 +1,31 @@
+# Archivos de React Native móvil que no son necesarios para web
+ios/
+android/
+Gemfile
+Gemfile.lock
+Podfile
+Podfile.lock
+vendor/
+.bundle/
+
+# Archivos de Metro (React Native bundler)
+metro.config.js
+babel.config.js
+
+# Entry point de móvil
+index.js
+
+# Tests
+__tests__/
+*.test.*
+*.spec.*
+jest.config.js
+
+# Archivos de desarrollo
+.eslintrc.js
+.prettierrc.js
+.watchmanconfig
+
+# Dependencias 
+node_modules/
+.git/

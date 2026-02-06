@@ -1,8 +1,16 @@
 {
+  "framework": "vite",
   "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
   "devCommand": "npm run web",
+  "installCommand": "npm install",
+  "ignoreCommand": "npx turbo-ignore",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "@vercel/node"
+    }
+  }
 }
