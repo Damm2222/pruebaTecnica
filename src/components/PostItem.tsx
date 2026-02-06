@@ -12,11 +12,9 @@ interface PostItemProps {
  */
 export const PostItem: React.FC<PostItemProps> = ({post, onDelete}) => {
   const handleDelete = () => {
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' && typeof globalThis !== 'undefined' && 'window' in globalThis) {
       // window.confirm funciona en navegadores; Alert.alert no está soportado en web
-      const confirmed = window.confirm(
-        `¿Estás seguro de eliminar "${post.name}"?`,
-      );
+      const confirmed = (globalThis as any).window.confirm(`¿Estás seguro de eliminar "${post.name}"?`);
       if (confirmed) {
         onDelete(post.id);
       }
