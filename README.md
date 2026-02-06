@@ -1,32 +1,112 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Posts App - React Native con NgRx
+
+Aplicación React Native para gestionar Posts usando Redux Toolkit con arquitectura tipo NgRx.
+
+## 🚀 Características
+
+- ✅ React Native 0.83.1 con TypeScript
+- ✅ Redux Toolkit (arquitectura tipo NgRx)
+- ✅ CRUD completo de Posts (Crear, Leer, Actualizar, Eliminar)
+- ✅ Arquitectura limpia y escalable
+- ✅ Buenas prácticas con camelCase
+
+## 📁 Estructura del Proyecto
+
+```
+PruebaTecnica/
+├── src/
+│   ├── models/              # Modelos de datos (interfaces TypeScript)
+│   │   └── post.model.ts
+│   ├── store/               # Configuración del Store Redux
+│   │   ├── store.ts         # Store principal
+│   │   └── hooks.ts         # Hooks tipados
+│   ├── features/            # Features organizados por dominio
+│   │   └── posts/
+│   │       ├── posts.slice.ts      # Actions + Reducer (NgRx-style)
+│   │       └── posts.selectors.ts  # Selectors memoizados
+│   └── components/          # Componentes de UI
+│       ├── PostList.tsx     # Lista de posts
+│       ├── PostItem.tsx     # Item individual
+│       └── PostForm.tsx     # Formulario crear/editar
+├── App.tsx                  # Componente raíz con Provider
+└── package.json
+```
+
+## 🏗️ Arquitectura NgRx
+
+### State Management (Redux Toolkit)
+
+**Store** (`src/store/store.ts`)
+- Configuración centralizada del estado global
+- Types para RootState y AppDispatch
+
+**Slice** (`src/features/posts/posts.slice.ts`)
+- Combina Actions + Reducer al estilo NgRx
+- Actions: `addPost`, `updatePost`, `deletePost`, `selectPost`
+- Estado inmutable con Immer
+
+**Selectors** (`src/features/posts/posts.selectors.ts`)
+- Selectors memoizados con Reselect
+- `selectAllPosts`, `selectPostsSortedByDate`, `selectPostsCount`
+- Optimización de renderizado
+
+### Modelo de Datos
+
+```typescript
+interface Post {
+  id: string;
+  name: string;           // camelCase ✅
+  description: string;    // camelCase ✅
+  createdAt: string;
+}
+```
+
+## 📱 Funcionalidades
+
+1. **Listar Posts**: Vista de todos los posts ordenados por fecha
+2. **Crear Post**: Formulario modal con validaciones
+3. **Editar Post**: Modificar posts existentes
+4. **Eliminar Post**: Eliminar posts con confirmación visual
+5. **Validaciones**: Nombre mínimo 3 caracteres, descripción mínimo 10
+
+## 🎨 UI/UX
+
+- Diseño moderno con Material Design
+- FAB (Floating Action Button) para crear posts
+- Modal para formularios
+- Estados vacíos informativos
+- Contador de posts en el header
+- Animaciones suaves
 
 # Getting Started
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
-## Step 1: Start Metro
+## Step 1: Install Dependencies
+
+```sh
+npm install
+```
+
+## Step 2: Start Metro
 
 First, you will need to run **Metro**, the JavaScript build tool for React Native.
 
 To start the Metro dev server, run the following command from the root of your React Native project:
 
 ```sh
-# Using npm
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
+## Step 3: Build and run your app
 
 With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
 
 ### Android
 
 ```sh
-# Using npm
 npm run android
+```
 
 # OR using Yarn
 yarn android
@@ -95,3 +175,4 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+# pruebaTecnica
